@@ -20,7 +20,7 @@ var Vocab = {
 function test() {
 	//alert( JSON.stringify( localStorage.getItem( 'avocabro_vocabs' ), true ) );
 	$( '.vocabs' ).html( '' );
-	var v = getVocabsList();
+	var v = Avocabro.vocabs.list();
 	$( '.vocabs' ).append( 'Count: ' + v.count + '<hr />' );
 	for( vocabUID in v[ 'vocabs' ] ) {
 		$( '.vocabs' ).append( 'UID <span class="uid-copy" onclick="$( \'.uid\' ).val( $( this ).html() );">' + v.vocabs[ vocabUID ][ 'uid' ] + '</span>; <span onclick="$(\'.v_name\').html( $( this ).html() );test_load(\'' + v.vocabs[ vocabUID ][ 'uid' ] + '\');">' + v.vocabs[ vocabUID ][ 'name' ] + '<hr />' );
@@ -29,7 +29,7 @@ function test() {
 }
 
 function test_load( uid ) {
-	var c = getVocabsContents( uid );
+	var c = Avocabro.vocabs.getContents( uid );
 	$( '.contents' ).html( '' );
 	$( '.contents' ).append( 'Count: ' + c.count + '<hr />' );
 	for( entry in c[ 'items' ] ) {
@@ -37,61 +37,22 @@ function test_load( uid ) {
 		$( '.contents' ).append( '<span onclick="$(\'.wid\').val(' + entry + ');$( \'.getw\').click();highlight();">' + i[ 'word' ] + '</span> (' + i[ 'type' ] + '): <b>' + i[ 'translation' ] + '</b>; <i>' + i[ 'example' ] + '</i><hr />' );
 	}
 }
+
 function autoload() {
+	// Check if that's the first load of Avocabro
+	if( localStorage.getItem( 'avocabro_vocabs:init_passed' ) !== 'true' ) {
+		localStorage.setItem( 'avocabro_vocabs', JSON.stringify( {} ) );
+		localStorage.setItem( 'avocabro_vocabs:init_passed', 'true' );
+	}
+
+	// Loading vocabs
 	var vocabs_list = JSON.parse( localStorage.getItem( 'avocabro_vocabs', '{}' ) );
 	if( vocabs_list === 'undefined' )
 		vocabs_list = {};
 
 	avocabro_vocabs = vocabs_list;
 	
-	if( test_mode === true )
-		test();
-}
-
-function getVocabsList() {
-	var output = {};
-	output[ 'count' ] = Object.keys( avocabro_vocabs ).length;
-	output[ 'vocabs' ] = [];
-	for( vocabUID in avocabro_vocabs ) {
-		output[ 'vocabs' ].push(
-			{ 
-				name: avocabro_vocabs[ vocabUID ][ 'name' ], 
-				items_count: ( avocabro_vocabs[ vocabUID ][ 'entries' ] === undefined ? 0 : avocabro_vocabs[ vocabUID ][ 'entries' ].length ), 
-				last_repeat: avocabro_vocabs[ vocabUID ][ 'last_repeat' ],
-				uid: vocabUID
-			} );
-	}
-
-	return output;
-}
-
-function getVocabsContents( uid ) {
-	var output = {};
-	output[ 'items' ] = avocabro_vocabs[ uid ][ 'entries' ];
-	output[ 'count' ] = ( avocabro_vocabs[ uid ][ 'entries' ] === undefined ? '0' : avocabro_vocabs[ uid ][ 'entries' ].length );
-
-	return output;
-}
-
-function createVocab( name ) {
-	var UID = _generate_GUID();
-	var new_vocab = Vocab;
-	new_vocab.name = name;
-
-	avocabro_vocabs[ UID ] = new_vocab;
-	localStorage.setItem( 'avocabro_vocabs', JSON.stringify( avocabro_vocabs ) );
-
-	autoload();
-}
-
-function _generate_GUID() {
-	function s4() {
-		return Math.floor((1 + Math.random()) * 0x10000)
-		.toString(16)
-		.substring(1);
-  }
-	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-	s4() + '-' + s4() + s4() + s4();
+	if( test_mode === true ) test();
 }
 
 var Avocabro = {
@@ -117,6 +78,34 @@ var Avocabro = {
 			Avocabro.service.save();
 
 			return true;
+		},
+
+		list: function() {
+			var output = {};
+			output[ 'count' ] = Object.keys( avocabro_vocabs ).length;
+			output[ 'vocabs' ] = [];
+			for( vocabUID in avocabro_vocabs ) {
+				var vocabData = avocabro_vocabs[ vocabUID ];
+				output[ 'vocabs' ].push(
+					{ 
+						name: vocabData[ 'name' ], 
+						items_count: ( vocabData[ 'entries' ] === undefined ? 0 : vocabData[ 'entries' ].length ), 
+						last_repeat: vocabData[ 'last_repeat' ],
+						uid: vocabUID
+					} 
+				);
+			}
+
+			return output;
+		},
+
+		getContents: function( uid ) {
+			var output = {};
+			var vocab = avocabro_vocabs[ uid ];
+			output[ 'items' ] = vocab[ 'entries' ];
+			output[ 'count' ] = ( vocab[ 'entries' ] === undefined ? '0' : vocab[ 'entries' ].length );
+
+			return output;
 		}
 	},
 
@@ -145,6 +134,7 @@ var Avocabro = {
 				}
 			}
 
+			Avocabro.service.save();
 			return true;
 		},
 
@@ -159,6 +149,23 @@ var Avocabro = {
 			autoload();
 
 			return true;
+		},
+
+		bindEvent: function( func, event ) {
+
+		},
+
+		test: function() {
 		}
 	}
 };
+
+function _generate_GUID() {
+	function s4() {
+		return Math.floor( ( 1 + Math.random() ) * 0x10000 )
+		.toString( 16 )
+		.substring( 1 );
+	}
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	s4() + '-' + s4() + s4() + s4();
+}
