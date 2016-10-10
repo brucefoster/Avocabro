@@ -1,5 +1,6 @@
 var avocabro_vocabs = {};
-var test_mode = true;
+var avocabro_env = {};
+avocabro_env[ 'test-mode' ] = true;
 
 var VocabEntry = {
 	'word': '',
@@ -8,7 +9,7 @@ var VocabEntry = {
 	'example': false,
 	'last_repeat': 0,
 	'ER': 0,
-	'MS': 0 // Memorizing state. 0 — только добавлен, 1 — было повторение, ... 6 — слово выучено
+	'MS': 0 // Memorizing state, scale from 0 to 6. 0 is for "just added", 1 — "memorized once", ... 6 means "word is memorized completely"
 };
 
 var Vocab = {
@@ -17,29 +18,8 @@ var Vocab = {
 	'last_repeat': 0
 };
 
-function test() {
-	//alert( JSON.stringify( localStorage.getItem( 'avocabro_vocabs' ), true ) );
-	$( '.vocabs' ).html( '' );
-	var v = Avocabro.vocabs.list();
-	$( '.vocabs' ).append( 'Count: ' + v.count + '<hr />' );
-	for( vocabUID in v[ 'vocabs' ] ) {
-		$( '.vocabs' ).append( 'UID <span class="uid-copy" onclick="$( \'.uid\' ).val( $( this ).html() );">' + v.vocabs[ vocabUID ][ 'uid' ] + '</span>; <span onclick="$(\'.v_name\').html( $( this ).html() );test_load(\'' + v.vocabs[ vocabUID ][ 'uid' ] + '\');">' + v.vocabs[ vocabUID ][ 'name' ] + '<hr />' );
-	}
-
-}
-
-function test_load( uid ) {
-	var c = Avocabro.vocabs.getContents( uid );
-	$( '.contents' ).html( '' );
-	$( '.contents' ).append( 'Count: ' + c.count + '<hr />' );
-	for( entry in c[ 'items' ] ) {
-		i = c[ 'items' ][ entry ];
-		$( '.contents' ).append( '<span onclick="$(\'.wid\').val(' + entry + ');$( \'.getw\').click();highlight();">' + i[ 'word' ] + '</span> (' + i[ 'type' ] + '): <b>' + i[ 'translation' ] + '</b>; <i>' + i[ 'example' ] + '</i><hr />' );
-	}
-}
-
 function autoload() {
-	// Check if that's the first load of Avocabro
+	// Check if that's the first launch of Avocabro
 	if( localStorage.getItem( 'avocabro_vocabs:init_passed' ) !== 'true' ) {
 		localStorage.setItem( 'avocabro_vocabs', JSON.stringify( {} ) );
 		localStorage.setItem( 'avocabro_vocabs:init_passed', 'true' );
@@ -52,7 +32,7 @@ function autoload() {
 
 	avocabro_vocabs = vocabs_list;
 	
-	if( test_mode === true ) test();
+	if( avocabro_env[ 'test-mode' ] === true ) test();
 }
 
 var Avocabro = {

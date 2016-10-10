@@ -50,6 +50,8 @@
 	}
 </style>
 <script src="jquery-3.1.1.min.js" type="text/javascript"></script>
+<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+<script type="text/javascript" src="test.js"></script>
 <script type="text/javascript" src="datamodel.js"></script>
 <table>
 <tr>
@@ -109,6 +111,11 @@
 		<button class="getw">Get</button><br /><br />
 		<div class="entry-data">Entry data will appear here</div>
 </td>
+<td style="vertical-align: top;">
+<b>Play word & Example</b><hr />
+		<textarea class="to-play" placeholder="word,type,translation,example"></textarea>
+		<button class="play">Play that</button><br /><br />
+</td>
 </tr>
 </table>
 		<div class="updated">Updated</div>
@@ -117,6 +124,10 @@
 		$( '.updated' ).fadeIn( 50 );
 		setTimeout( function() { $( '.updated' ).fadeOut( 100 ); }, 500 );
 	}
+
+	$( '.play' ).click( function() {
+		responsiveVoice.speak( $( '.to-play' ).val(), "US English Female", {volume: 1.5});
+	} );
 
 	$( '.create_vocab' ).click( function() {
 		Avocabro.vocabs.create( $( '.name' ).val() );
@@ -143,6 +154,8 @@
 		error rate: ${word['ER']}<br />
 		last repeat: ${word['last_repeat']}<br />
 		` );
+
+		$( '.to-play' ).val( word['word'] + '. example: ' + word['example'] );
 	} );
 
 	$( '.del_vocab' ).click( function() {
