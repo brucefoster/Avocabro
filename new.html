@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="google" value="notranslate" />
+	<title>Text editor for Text Editors</title>
+	<link rel="shortcut icon" href="icon.png" />
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+	<style type="text/css">
+	html, body {
+		background: #F2F3F4;
+	}
+
+	.navbar {
+		background: transparent;
+		border: none;
+		margin: 0px;
+	}
+
+	.promo {
+		background: linear-gradient(to left, #16BFFD , #CB3066); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+		padding: 50px 0 50px 0;
+		box-shadow: inset 0px 0px 19px 2px rgba(0,0,0,0.2);
+	}
+
+	.promo-small {
+		background: linear-gradient(to left, #1e3c72 , #2a5298);
+		padding: 15px 0 17px 0;
+		box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.15), 0px 7px 12px -5px rgba(0,0,0,0.8);
+		overflow: hidden;
+	}
+
+	.promo h1 {
+		color: #FFFFFF;
+		margin: 0px;
+		margin-bottom: 20px;
+		font-size: 24px;
+		font-weight: 700;
+	}
+
+	.promo-small h1 {
+		color: #FFFFFF;
+		margin: 0px;
+		border-top: solid 1px rgba( 255,255,255,0.2 );
+		margin-top: 18px;
+		padding-top: 50px;
+		margin-bottom: 15px;
+		font-size: 22px;
+		font-weight: 700;
+
+	}
+
+	.promo-small h2 {
+		color: rgba( 255,255,255,0.85 );
+		margin: 0px;
+		margin-bottom: 15px;
+		font-size: 13px;
+		font-weight: 400;
+
+	}
+
+	.promo p {
+		color: #FFFFFF;
+		font-size: 16px;
+		line-height: 30px;
+	}
+
+	.container textarea {
+		width: 440px;
+		background: #FFFFFF;
+		padding: 10px 15px 10px 15px;
+		border: solid 1px #E8E8E8;
+		border-radius: 0px;
+		font-family: monospace !important;
+		height: 500px;
+		box-shadow: inset 0px 7px 8px -9px rgba(0,0,0,0.1);
+	}
+
+	.container #textarea-expand {
+		background: #FFFFFF;
+		padding: 2px 10px 5px 10px;
+		border: solid 1px #E8E8E8;
+		border-bottom-left-radius: 3px;
+		color: #505050;
+		font-size: 20px;
+		line-height: 18px;
+		position: absolute;
+		width: 36px;
+		margin-top: 0px;
+		margin-left: 404px;
+	}
+
+	.container #textarea-expand:hover {
+		background: #505050;
+		color: white;
+		cursor: pointer;
+		border-color: #505050;
+	}
+
+	.results {
+		width: 310px;
+		vertical-align: top;
+		max-height: 500px;
+		overflow-y: auto;
+		margin-left: 15px;
+		display: inline-block;
+		border: solid 0px #EEEEEE;
+		padding: 0px;
+		border-radius: 4px;
+	}
+
+	.results .hint {
+		width: 200px;
+		margin: 150px auto 190px auto;
+		color: #BBBBBB;
+		text-align: center;
+		font-size: 18px;
+		line-height: 32px;
+	}
+
+	.results .hint div {
+		color: #EEEEEE;
+		font-size: 120px;
+		margin-bottom: 60px;
+	}
+
+	.results .word {
+		font-size: 14px;
+		font-weight: bold;
+		line-height: 30px;
+	}
+
+	.results .line {
+		font-size: 14px;
+		font-weight: 400;
+		color: #CCCCCC;
+		display: inline-block;
+		margin: 0;
+		padding: 0;
+		padding-top: 5px;
+		height: 50px;
+		float: left;
+		margin-right: 10px;
+	}
+
+	.results .translation {
+		font-size: 13px;
+		line-height: 20px;
+		color: #808080;
+	}
+
+	.results .couple {
+		border-bottom: solid 1px #EEEEEE;
+		padding-bottom: 12px;
+		padding-top: 5px;
+	}
+
+	.results .result-lines {
+		display: none;
+	}
+
+	h4 {
+		margin-top: 40px;
+		margin-bottom: 10px;
+		font-weight: 700;
+	}
+
+	*:not( textarea ) {
+		font-family: Open Sans;
+	}
+
+	.intro b {
+		display: block;
+		font-size: 18px;
+		margin-bottom: 5px;
+		color: #202020;
+	}
+
+	.intro {
+		font-size: 13px;
+		line-height: 22px;
+		color: #909090;
+	}
+
+	.right {
+		float: right;
+	}
+
+	.recognize, .check-up, .restart, .back {
+		font-size: 16px;
+		margin-top: 0px;
+		padding: 10px 20px 10px 20px;
+	}
+
+	.space {
+		margin-bottom: 20px;
+		display: block;
+	}
+
+	.pageheading {
+		background: #E9EBEE;
+		padding: 80px 0 80px 0;
+		box-shadow: inset 0px 7px 12px -5px rgba(0,0,0,0.2);
+	}
+
+	.pageheading h1 {
+		font-size: 28px;
+		font-weight: 100;
+		color: #202020;
+		margin: 0px;
+	}
+
+	::-webkit-scrollbar {
+    width: 5px;
+    background: #F7F7F7;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1); 
+}
+	.subheader {
+		font-size: 13px;
+		padding: 0px;
+		margin-top: -5px;
+		color: #707070;
+	}
+
+	.learn-words {
+		display: none;
+	}
+
+	.test {
+		text-align: center;
+		padding-top: 40px;
+		padding-bottom: 150px;
+	}
+
+	.amazing {
+		text-align: center;
+		padding-top: 100px;
+		padding-bottom: 150px;
+		display: none;
+	}
+
+	.amazing h2 {
+		font-weight: 700;
+		font-size: 26px;
+		margin-bottom: 20px;
+	}
+
+	.amazing h6 {
+		font-weight: 400;
+		font-size: 16px;
+		color: #707070;
+		margin-bottom: 10px;
+	}
+
+
+	.test .phrase-given {
+		font-size: 18px;
+		font-weight: 700;
+	}
+
+	.test input {
+		font-size: 16px;
+		font-weight: 400;
+		border: solid 1px #DDDDDD;
+		margin-top: 30px;
+		width: 500px;
+		border-radius: 4px;
+		padding: 10px 20px 10px 20px;
+		text-align: center;
+	}
+
+	.test .alert {
+		width: 300px;
+		text-align: center;
+		display: inline-block;
+		margin-bottom: 50px;
+		font-size: 14px;
+		opacity: 0;
+	}
+
+	.incorrect {
+		position: absolute;
+		width: 1140px;
+		background: #FFFFFF;
+		height: 50px;
+		margin-top: 28px;
+		font-size: 18px;
+		display: none;
+		text-align: center;
+	}
+
+	.incorrect .wrong {
+		display: inline-block;
+		color: red;
+		text-decoration: line-through;
+		margin-right: 10px;
+	}
+
+	.menu {
+		padding-bottom: 0px;
+	}
+
+	.menu .logo {
+		font-size: 20px;
+		color: white;
+		font-weight: 800;
+		margin-right: 40px;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	.menu .logo span {
+		font-weight: 100;
+	}
+
+	.menu .link {
+		font-size: 12px;
+		color: rgba( 255,255,255,0.8 );
+		margin-right: 25px;
+		display: inline-block;
+		vertical-align: top;
+		padding-top: 6px;
+	}
+
+	.menu .link.active {
+		color: rgba( 255,255,255,1 );
+		border-bottom: solid 1px rgba( 255,255,255,0 );
+		padding-bottom: 2px;
+		font-weight: 700;
+	}
+
+	.menu .link.r {
+		float: right;
+		margin-top: 0px;
+		margin-right: 0px;
+		margin-left: 25px;
+	}
+
+	.menu-heading {
+		font-weight: 400;
+		font-size: 18px;
+		margin-bottom: 10px;
+	}
+
+	.space-top {
+		margin-top: 15px;
+	}
+
+	.nav-sidebar li a {
+		padding: 6px 0px 6px 0;
+		font-size: 13px;
+	}
+
+	.nav-sidebar li.active a {
+		color: #202020;
+	}
+
+	.nav-sidebar li.empty {
+		color: #909090;
+		font-size: 13px;
+		padding: 6px 0px 6px 0;
+	}
+
+	.settings hr {
+		margin-top: 0px;
+		margin-bottom: 15px;
+	}
+
+	hr {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	.area__vocab_rec {
+		display: none;
+	}
+
+	.help {
+		padding-top: 10px;
+		padding-bottom: 10px;
+		border-left: solid 4px #EEEEEE;
+		padding-left: 20px;
+		margin-top: 30px;
+	}
+
+	.help h6 {
+		margin: 0px;
+		font-size: 18px;
+		color: #202020;
+		font-weight: 400;
+		margin-bottom: 9px;
+	}
+
+	.help p {
+		margin: 0px;
+		font-size: 13px;
+		color: #505050;
+		line-height: 22px;
+	}
+
+	.example {
+		padding-top: 5px;
+		font-size: 13px;
+		color: #808080;
+	}
+
+	.example a {
+		border-bottom: dashed 1px #337AB7;
+		padding-bottom: 0px;
+	}
+
+	.example a:hover {
+		border-bottom: dashed 1px #B53232;
+		padding-bottom: 0px;
+		color: #B53232;
+		cursor: pointer;
+		text-decoration: none;
+	}
+
+	.public h1 {
+		margin-top: 45px;
+		margin-bottom: 15px;
+		font-weight: 400;
+		font-size: 20px;
+	}
+
+	.vocab-featured {
+		width: 378px;
+		background: url( book.png ) 50% 50% no-repeat;
+		background-size: 100%;
+		padding: 50px 30px 50px 30px;
+		text-align: center;
+		display: inline-block;
+		margin-right: 10px;
+		transition: background-size 0.3s;
+	}
+
+	.vocab-featured.journey {
+		background: url( journey.png ) 50% 50% no-repeat;
+		background-size: 100%;
+	}
+
+	.vocab-featured:hover {
+		background-size: 110%;
+		cursor: pointer;
+	}
+
+	.vocab-featured:last-child {
+		margin-right: 0px;
+	}
+
+	.vocab-featured.gray {
+		border: solid 2px #F2F3F4;
+		background: white;
+		padding: 48px 18px 48px 28px;
+	}
+
+	.vocab-featured.gray h6 {
+		color: #606060;
+	}
+
+	.vocab-featured.gray h2 {
+		color: #202020;
+	}
+
+	.vocab-featured h6 {
+		font-size: 11px;
+		font-weight: 100;
+		text-transform: uppercase;
+		letter-spacing: 0.3em;
+		color: white;
+	}
+
+	.vocab-featured h2 {
+		font-size: 30px;
+		font-weight: 100;
+		line-height: 42px;
+		color: white;
+		margin-top: 30px;
+	}
+
+	.settings-radio {
+		font-size: 13px;
+		padding-top: 5px;
+		color: #303030;
+	}
+
+	.settings-cb {
+		font-size: 13px;
+		color: #303030;
+		padding-bottom: 7px;
+	}
+
+	.settings-cb.disabled {
+		font-size: 13px;
+		color: #BBBBBB;
+	}
+
+	.settings-cb.disabled span {
+		color: #BBBBBB;
+	}
+
+	.settings-cb.disabled input {
+		opacity: 0.4;
+	}
+
+	.settings-radio span, .settings-cb span {
+		display: block;
+		font-size: 11px;
+		color: #909090;
+		padding-top: 2px;
+		padding-left: 1px;
+		padding-bottom: 4px;
+	}
+
+	.sidebar-new-area {
+		background: #F2F3F4;
+		margin-top: 22px;
+		margin-left: -25px;
+		margin-right: -20px;
+		width: 285px;
+		height: 25px;
+		box-shadow: inset 0px 19px 14px -19px rgba(0,0,0,0.07);
+	}
+
+	@media only screen and (max-device-width: 480px) {
+		
+	}
+
+	.place-for-input {
+		padding: 45px 0px;
+		border: solid 1px #EEEEEE;
+		border-radius: 4px;
+		padding-top: 40px;
+		background: #FBFBFB;
+		/*border-left-width: 4px;*/
+		text-align: center;
+		/*box-shadow: 0px 5px 13px -5px rgba(0,0,0,0.15);*/
+	}
+
+	.place-for-input .word {
+		text-align: left;
+		padding: 11px 16px;
+		padding-right: 180px;
+		margin-right: 5px;
+		font-size: 15px;
+		vertical-align: top;
+		border: solid 1px #E4E4E4;
+		border-radius: 4px;
+		width: 540px;
+		height: auto;
+		display: inline-block;
+		box-shadow: inset 0 1px 1px rgba(0,0,0,.035);
+	}
+
+	.place-for-input .translate {
+		text-align: left;
+		margin-left: -136px;
+		margin-top: 7px;
+		/*border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;*/
+		box-shadow: inset 0 1px 1px rgba(0,0,0,.175);
+		line-height: 19px;
+		font-size: 12px;
+		font-weight: 600;
+		padding: 5px 12px;
+		background: #2A5298;
+		border-color: #2A5298;
+	}
+
+	.place-for-input .translate:hover {
+		background: #3568BF;
+		border-color: #3568BF;
+	}
+
+	.gotodict {
+		color: #4A75E6;
+		border-color: #4A75E6;
+		background: white;
+		font-size: 14px;
+		line-height: 24px;
+	}
+
+	.translations-list {
+		width: 540px;
+		margin: 10px auto;
+		text-align: left;
+		display: none;
+		padding-left: 5px;
+	}
+
+	.translations-list b {
+		font-size: 10px;
+		text-align: left;
+		margin-top: 22px;
+		margin-bottom: -5px;
+		display: block;
+		color: #BBBBBB;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+	}
+
+	.translations-list .translation-option {
+		border: solid 1px #EEEEEE;
+		background: white;
+		box-shadow: inset 0 1px 5px 0px rgba(0,0,0,.025);
+		text-align: left;
+		padding: 9px 15px;
+		display: inline-block;
+		width: 540px;
+		border-radius: 3px;
+		color: #2A5298;
+		font-size: 14px;
+		margin-top: 15px;
+	}
+	.translations-list .translation-option:hover {
+		border: solid 1px #C5D1E5;
+		background: #EDF1F7;
+		cursor: pointer;
+	}
+
+	.translations-list .translation-option p {
+		font-weight: 800;
+		font-size: 15px;
+		color: #000000;
+		margin-bottom: 5px;
+	}
+
+	.translations-list .translation-option p span {
+		font-weight: 400;
+		color: #AAAAAA;
+	}
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	
+<!--div class="promo">
+<div class="container">
+	<h1>Сервис для запоминания слов</h1>
+    <p>Easy Vocabulary — это сервис, который помогает запоминать английские слова и фразы по вашему словарю. Вводите фразы как по отдельности, так и все сразу: система попытается сама определить, где слово и где его перевод. </p>
+</div-->
+<div class="promo-small">
+<div class="container">
+	<div class="menu">
+		<div class="link r">Войти</div>
+		<div class="link r">Поддержать проект</div>
+		<div class="logo">Avocabro <span>— онлайн-словарь</span></div>
+		<div class="link">Тренировки</div>
+		<div class="link active">Мои словари</div>
+		<div class="link">Общедоступные</div>
+	</div>
+	<!--h1>Создание нового словаря</h1-->
+</div>
+</div>
+<div class="pageheading">
+<div class="container">
+<h1>Словарь «Business English»</h1>
+</div>
+</div>
+	<div class="container" style="margin-top: -50px;">
+	<div class="col col-md-9" style="background: #FFFFFF;box-shadow: 0px 7px 12px -5px rgba(0,0,0,0.05);margin-right: 25px;width: 830px;padding: 30px 30px 20px 30px;">
+	<div class=" create-vocab">
+		<div class="area__vocab_fill">
+		<button type="button" class="btn btn-success recognize right gotodict">Вернуться к словарю</button>
+		<p class="intro">
+		<b>Добавление новых слов</b>
+		Вы сможете выбрать, какие слова нужно добавить в словарь
+		</p>
+		<div class="space"></div>
+		<div class="place-for-input">
+		<p class="intro" style="padding-bottom: 10px;">
+		<b style="font-size: 16px;">Что хотите перевести?</b>
+		Работает с помощью <a href="http://api.yandex.ru/dictionary/">API сервиса «Яндекс.Словарь»</a>
+		</p>
+			<input type="text" class="form-control word" placeholder="Введите слово или фразу целиком" /> 
+			<button type="button" class="btn btn-success recognize translate">Найти перевод</button>
+			<div class="translations-list">
+				<b>Что из этого подходит лучше?</b>
+				<div>
+				<div class="translation-option"><p>прокат<span>, сущ.</span></p>
+				boat hire — прокат лодок</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div id="textarea-expand">⇥</div>
+		<textarea class="editor vocab" placeholder="Распознаем любой способ записи.&#10;&#10;Варианты записи:&#10;&bull; фраза и перевод на одной строке;&#10;&bull; фраза на одной строке и перевод — на следующей&#10;&bull; отдельно все иностранные фразы и отдельно переводы&#10;&#10;Можете воспользоваться примером (ниже)."></textarea>
+		<div class="results">
+			<div class="hint"><div>⇄</div>Здесь появятся фразы и переводы</div>
+			<div class="result-lines"></div>
+		</div> -->
+		<!-- <div class="example">Хотите <a id="__show_example">посмотреть на пример заполнения</a>?</div> -->
+
+		<div class="public">
+			<h1>Популярные словари</h1>
+			<div>
+				<div class="vocab-featured">
+					<h6>Популярный словарь</h6>
+					<h2>«1 000 самых частых английских слов»</h2>
+				</div>
+				<div class="vocab-featured journey">
+					<h6>Популярный словарь</h6>
+					<h2>«Топ-200 фраз для вашего путешествия»</h2>
+				</div>
+			</div>
+		</div>
+
+		<div class="help">
+		<h6>Если есть вопросы</h6>
+		<p>Попробуйте найти ответы <a href="">на странице помощи</a> или <a href="">в Гугле</a>, если вопрос не связан с сайтом.</p>
+		</div>
+		</div>
+		<div class="area__vocab_rec">
+		<button type="button" class="btn btn-primary right back">Вернуться к заполнению</button>
+		<p class="intro">
+		<b>Все фразы найдены</b>
+		Проверьте, все ли фразы оказались в списке и выберите тренировку
+		</p>
+		<div class="space"></div>
+	
+		</div>
+	</div>
+	
+	<div class=" learn-words">
+		<button type="button" class="btn btn-primary right back" style="display: block;">Вернуться к словарю</button>
+		<h4>Запоминание слов</h4>
+		<p class="subheader">45 слов на запоминании, 0 выучено, 0 на повторение</p>
+		<div class="space"></div>
+		<div class="test">
+			<div class="alert alert-success" role="alert">Отлично, вы запомнили эту фразу!</div>
+			<div class="phrase-given">Вставьте слова в текстовое поле слева, а потом нажмите на эту кнопку</div>
+			<div class="incorrect"><div class="wrong">проверка</div>отлично просто</div>
+			<form class="check-form"><input type="text" class="translation-input" placeholder="введите здесь перевод" /><br />
+			<button type="submit" class="btn btn-success check-up">Проверить перевод</button></form>
+		</div>
+		<div class="amazing">
+			<h2>Вы восхитительны</h2>
+			<h6>Поздравлям, все фразы выучены. Можно добавить новые или повторить пройденные.</h6>
+			<button type="submit" class="btn btn-success restart">Повторить все слова</button>
+		</div>
+		</div>
+		</div>
+		<div class="col col-md-3 settings" style="box-shadow: 0px 7px 12px -5px rgba(0,0,0,0.05);padding: 15px 25px 15px 25px;background: #FFFFFF;">
+		<div class="menu-heading">Настройки</div>
+		<!-- <div class="radio">
+  <label class="settings-radio">
+    <input type="radio" value="option1" checked>
+    Ввести много фраз сразу
+    <span>Текстовое поле</span>
+  </label>
+</div>
+<div class="radio">
+  <label class="settings-radio">
+    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+    Вводить фразы попарно
+    <span>Доступен автоперевод</span>
+  </label>
+</div>
+<hr> -->
+<div class="checkbox">
+  <label class="settings-cb">
+    <input type="checkbox" id="EV__Settings_ExpandTextarea" checked="">
+    Примеры употребления
+    <span>Отображать примеры использования</span>
+  </label>
+</div>
+<div class="checkbox">
+  <label class="settings-cb">
+    <input type="checkbox" id="EV__Settings_ExpandTextarea" checked="">
+    Сразу добавлять в словарь
+    <span>Сохранять без подтверждения</span>
+  </label>
+</div>
+<div class="checkbox">
+  <label class="settings-cb">
+    <input type="checkbox" id="EV__Settings_ExpandTextarea">
+    Свой вариант перевода
+    <span>Возможность ручного перевода</span>
+  </label>
+</div>
+<hr>
+<div class="checkbox">
+  <label class="settings-cb">
+    <input type="checkbox" id="EV__Settings_ExpandTextarea">
+    Переводить после вставки
+    <span>Сразу переводить после Ctrl + V</span>
+  </label>
+</div>
+<hr>
+<div class="checkbox">
+  <label class="settings-cb disabled">
+    <input type="checkbox" value="">
+    Прослушивать слова
+    <span>Озвучивать оригинальное слово</span>
+  </label>
+</div>
+<div class="sidebar-new-area"></div>
+		<div class="menu-heading space-top">Ваши словари</div>
+		<ul class="nav nav-sidebar">
+            <li class="empty">Нет сохраненных словарей</li>
+            <hr>
+            <li><a href="#">Открыть словарь друга</a></li>
+            <hr>
+            <li><a href="#">Общедоступные словари</a></li>
+            <li><a href="#">Популярные словари</a></li>
+            <li><a href="#">Новые словари</a></li>
+            <hr>
+            <li><a href="#">Восстановить из файла</a></li>
+            <li><a href="#">Сохранить мои словари в файл</a></li>
+          </ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var vocab_EN = [];
+		var vocab_RU = [];
+
+		var vocab_EN_C = [];
+		var vocab_RU_C = [];
+
+		var EV__storage = {
+			'state': {
+				'results_shown': false
+			},
+			'replacements': {
+				'intro': null,
+				'recognize': null
+			}
+		};
+
+		function getTranslation() {
+			var url = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?' +
+						'key=dict.1.1.20161005T155631Z.6124f62993f64a51.6b0c98e9904960c54e7c38628e5ca4000de2a124' +
+						'&text=' + $( '.word' ).val() +
+						'&lang=en-ru';
+
+			$.get( url, function( data ) {
+				$( '.translations-list div' ).html( '' );
+
+				for( cnt in data[ 'def' ] ) {
+					item = data[ 'def' ][ cnt ];
+					for( tr in item[ 'tr' ] ) {
+
+						var $i_tr = item[ 'tr' ][ tr ];
+
+						var txt = $i_tr[ 'text' ];
+						var typ = $i_tr[ 'pos' ];
+						if( $i_tr[ 'ex' ] !== undefined )
+							var exm = $i_tr[ 'ex' ][ 0 ][ 'text' ] + ' — ' + $i_tr[ 'ex' ][ 0 ][ 'tr' ][ 0 ][ 'text' ];
+						else
+							var exm = '(без примера)';
+
+						$( '.translations-list>div' ).append( `<div class="translation-option"><p>${txt}<span>, ${typ}</span></p>${exm}</div>` );
+						for( synonym in $i_tr[ 'syn' ] ) {
+
+							subitem = $i_tr[ 'syn' ][ synonym ];
+
+							var txt = subitem[ 'text' ];
+							var typ = subitem[ 'pos' ];
+							if( $i_tr[ 'ex' ] !== undefined && $i_tr[ 'ex' ][ parseInt( synonym ) + 1 ] !== undefined )
+								var exm = $i_tr[ 'ex' ][ parseInt( synonym ) + 1 ][ 'text' ] + ' — ' + $i_tr[ 'ex' ][ parseInt( synonym ) + 1 ][ 'tr' ][ 0 ][ 'text' ];
+							else
+								var exm = '(без примера)';
+							
+
+							$( '.translations-list>div' ).append( `<div class="translation-option"><p>${txt}<span>, ${typ}</span></p>${exm}</div>` );
+						}
+					} 
+				}
+
+				$( '.translations-list' ).slideDown( 'fast' );
+				$( '.word' ).blur();
+			});
+		}
+
+		$( '.translate' ).click( function() {
+			getTranslation();
+		});
+
+		$( '.word' ).focus( function() {
+			$( '.translations-list' ).slideUp( 'fast' );
+		});
+
+	$( document ).ready( function() {
+		$( '.word' ).bind( 'paste', function( e ) {
+			setTimeout( function() { getTranslation(); }, 50 );
+		});
+
+		$( '.word' ).keydown( function( e ) {
+			if( e.keyCode == 13 )
+				getTranslation();
+		});
+	});
+
+
+		function recognizeElements() {
+			vocab_EN = [];
+			vocab_RU = [];
+
+			var vocab = $( '.vocab' ).val();
+			var lines = vocab.split( '\n' );
+			for( line in lines ) {
+				if( lines[ line ].match(/[а-яА-Я]+/ig) ) {
+					vocab_RU.push( lines[ line ] );
+				} else if( lines[ line ].trim() != '' ) {
+					vocab_EN.push( lines[ line ].replace( /[0-9]*\./g, '' ).trim() );
+				}
+			}
+
+			if( vocab_RU.length != vocab_EN.length ) {
+				vocab_EN = [];
+				vocab_RU = [];
+
+				for( line in lines ) {
+					lines[ line ] = lines[ line ].trim();
+					if( lines[ line ] == '' ) continue;
+					var words = lines[ line ].split( '	' ).join( ' ' ).split( ' ' );
+					var EN_phrase = '';
+					var RU_phrase = '';
+					for( word in words ) {
+						if( words[ word ].match(/[а-яА-Я]+/ig) ) {
+							EN_phrase = words.slice( 0, word ).join( ' ' );
+							RU_phrase = words.slice( word ).join( ' ' );
+							break;
+						}
+					}
+
+					vocab_EN.push( EN_phrase.replace( /[0-9]*\./g, '' ).trim() );
+					vocab_RU.push( RU_phrase.replace( /[0-9]*\./g, '' ).trim() );
+				}
+			}
+
+			var html = '';
+			for( item in vocab_EN ) {
+				var number = parseInt( item ) + 1;
+				html += `<div class="couple"><div class="line">${number}.</div><div class="word">${vocab_EN[ item ]}</div><div class="translation">${vocab_RU[ item ]}</div></div>`;
+			}
+
+			$( '.results .result-lines' ).html( html );
+			$( '.results .hint' ).slideUp( 300 );
+			$( '.results .result-lines' ).slideDown( 300 );
+			EV__storage[ 'replacements' ][ 'intro' ] = $( '.intro' ).html();
+			$( '.intro' ).fadeTo( 150, 0, function() {
+				$( '.intro' ).html( `<b>Распознано ${number} слов</b>В случае ошибок распознавания попробуйте изменить текст в поле` );
+				$( '.intro' ).fadeTo( 150, 1 );
+				$( '.recognize' ).blur();
+			} );
+			EV__storage[ 'replacements' ][ 'recognize' ] = $( '.recognize' ).html();
+			$( '.recognize' ).fadeTo( 150, 0, function() {
+				$( '.recognize' ).html( `Начать запоминать` );
+				$( '.recognize' ).fadeTo( 150, 1 );
+			} );
+			EV__storage[ 'state' ][ 'results_shown' ] = true;
+		}
+
+		function resetResults() {
+			if( EV__storage[ 'state' ][ 'results_shown' ] === false )
+				return false;
+			EV__storage[ 'state' ][ 'results_shown' ] = false;
+			$( '.results .hint' ).slideDown( 300 );
+			$( '.results .result-lines' ).slideUp( 300 );
+			$( '.intro' ).fadeTo( 150, 0, function() {
+				$( '.intro' ).html( EV__storage[ 'replacements' ][ 'intro' ] );
+				$( '.intro' ).fadeTo( 150, 1 );
+				$( '.recognize' ).blur();
+			} );
+			$( '.recognize' ).fadeTo( 150, 0, function() {
+				$( '.recognize' ).html( EV__storage[ 'replacements' ][ 'recognize' ] );
+				$( '.recognize' ).fadeTo( 150, 1 );
+			} );
+		}
+
+		var wrong = [];
+		var correct = [];
+		var currentID = 0;
+
+		function resetState() {
+			$( '.results .hint' ).fadeIn( 200 );;
+			$( '.results .result-lines' ).fadeOut( 0 );
+			$( '.right' ).fadeOut( 0 );
+		}
+
+		function changePhrase() {
+			if( vocab_EN_C.length == 0 ) {
+				$( '.test' ).slideUp( 200 );
+				$( '.amazing' ).slideDown( 200 );
+				$( '.restart' ).focus();
+			}
+			var id = Math.floor( ( Math.random() * ( vocab_EN_C.length - 1 ) ) + 0 );
+			currentID = id;
+			$( '.phrase-given' ).html( vocab_RU_C[ id ] );
+			$( '.translation-input' ).val( '' );
+		}
+
+		function checkTranslation() {
+			var phrase = $( '.translation-input' ).val().trim();
+			vocab_EN_C[ currentID ] = vocab_EN_C[ currentID ].split( '−' ).join( '-' );
+			if( phrase == vocab_EN_C[ currentID ] )
+				return true;
+
+			if( vocab_EN_C[ currentID ].match( /\(.*\)/g ) ) {
+				if( phrase == vocab_EN_C[ currentID ].slice( vocab_EN_C[ currentID ].indexOf( '(' ) + 1, vocab_EN_C[ currentID ].indexOf( ')' ) ) )
+					return true;
+			}
+
+			if( phrase == vocab_EN_C[ currentID ].split( ' ' )[ 0 ] )
+				return true;
+
+			if( phrase == vocab_EN_C[ currentID ].split( '/' )[ 0 ] )
+				return true;
+
+			var similarity = similar_text( phrase, vocab_EN[ currentID ] ) / vocab_EN[ currentID ].length * 100;
+			if( similarity > 80 )
+				return true;
+
+			return false;
+		}
+
+	function similar_text ( first, second ) {
+	    if (first === null || second === null || typeof first === 'undefined' || typeof second === 'undefined') {
+	        return 0;
+	    }
+
+	    first += '';
+	    second += '';
+
+	    var pos1 = 0,
+	        pos2 = 0,
+	        max = 0,
+	        firstLength = first.length,
+	        secondLength = second.length,
+	        p, q, l, sum;
+
+	    max = 0;
+
+	    for (p = 0; p < firstLength; p++) {
+	        for (q = 0; q < secondLength; q++) {
+	            for (l = 0;
+	            (p + l < firstLength) && (q + l < secondLength) && (first.charAt(p + l) === second.charAt(q + l)); l++);
+	            if (l > max) {
+	                max = l;
+	                pos1 = p;
+	                pos2 = q;
+	            }
+	        }
+	    }
+
+	    sum = max;
+
+	    if (sum) {
+	        if (pos1 && pos2) {
+	            sum += this.similar_text(first.substr(0, pos2), second.substr(0, pos2));
+	        }
+
+	        if ((pos1 + max < firstLength) && (pos2 + max < secondLength)) {
+	            sum += this.similar_text(first.substr(pos1 + max, firstLength - pos1 - max), second.substr(pos2 + max, secondLength - pos2 - max));
+	        }
+	    }
+
+	    return sum;
+	}
+
+		var wasIncorrect = 0;
+		function checkTask() {
+			var phrase = $( '.translation-input' ).val().trim();
+			if( checkTranslation() === true ) {
+				if( wasIncorrect !== 2 ) {
+					correct.push( vocab_EN_C[ currentID ] )
+					vocab_RU_C.splice( currentID, 1 );
+					vocab_EN_C.splice( currentID, 1 );
+				}
+				wasIncorrect = 0;
+				changePhrase();
+				$( '.alert' ).fadeTo( 200, 1 );
+				setTimeout( function() { $( '.alert' ).fadeTo( 100, 0 ); }, 2500 );
+			} else {
+				$( '.incorrect' ).html( `<div class="wrong">${phrase}</div>${vocab_EN_C[ currentID ]}` );
+				$( '.incorrect' ).fadeIn( 0 );
+				$( '.check-up' ).html( 'Продолжить' );
+				$( '.check-up' ).focus();
+				wasIncorrect = 1;
+				wrong.push( vocab_EN_C[ currentID ] );
+			}
+		}
+
+		function startOver() {
+			vocab_EN_C = vocab_EN;
+			vocab_RU_C = vocab_RU;
+		}
+
+
+		$( '.recognize' ).click( function() { recognizeElements(); } );
+		$( '.start' ).click( function() { 
+			$( '.create-vocab' ).slideUp( 300 );
+			startOver();
+			changePhrase();
+			$( '.learn-words' ).slideDown( 300 );
+		} );
+		$( '.back' ).click( function() { 
+			$( '.area__vocab_fill' ).slideDown( 200 );
+			$( '.area__vocab_rec' ).slideUp( 200 );
+		} );
+
+		function formSubmit() {
+			if( wasIncorrect === 1 ) {
+				$( '.incorrect' ).fadeOut( 0 );
+				$( '.check-up' ).html( 'Проверить перевод' );
+				wasIncorrect = 2;
+				$( '.translation-input' ).focus();
+			} else
+				checkTask();
+		}
+
+		$( '.check-form' ).submit( function() { 
+			formSubmit(); return false; 
+		} );
+
+		$( '.check-up' ).click( function() { 
+			formSubmit(); return false;
+		} );
+
+		$( '.restart' ).click( function() { 
+			startOver();
+			changePhrase();
+			$( '.test' ).slideDown( 200 );
+			$( '.amazing' ).slideUp( 200 );
+		} );
+
+		$( '#__show_example' ).click( function() {
+			$( '.vocab' ).val(
+`fresh свежий
+amazing потрясающий
+tremendous огромный
+best лучший
+lamp лампа
+earphones наушники`
+			);
+			$( '.vocab' ).focus();
+		} );
+
+		$( '.vocab' ).click( resetResults );
+
+		var vocab = {
+			list: function() {
+				var vocab_list = localStorage.getItem( 'EV__vocabs' );
+				if( vocab_list === undefined )
+					return [];
+				else
+					return vocab_list;
+			},
+
+			save: function( name, vocab_foreign, vocab_native ) {
+				var current_vocab_list = this.list();
+				var new_vocab = {
+					'name': 			name,
+					'vocab_foreign': 	vocab_foreign,
+					'vocab_native': 	vocab_native
+				};
+
+				localStorage.setItem( 'EV__vocabs', current_vocab_list.concat( [ new_vocab ] ) );
+			}
+		};
+
+		$( '#textarea-expand,#EV__Settings_ExpandTextarea' ).click(
+			function() {
+				if( $( this ).attr( 'id' ) === 'textarea-expand' ) {
+					$( '#EV__Settings_ExpandTextarea' ).click();
+					return false;
+				}
+
+				if( $( '#EV__Settings_ExpandTextarea' ).prop( 'checked' ) == true ) {
+					$( '.results' ).hide( 300 );
+					setTimeout( function() { $( '.vocab' ).animate( { 'width': '100%' }, 300 ); }, 10 );
+					$( '#textarea-expand' ).animate( { 'margin-left': 734 }, 290 );
+					$( '#textarea-expand' ).html( '⇤' );
+				} else {
+					setTimeout( function() { $( '.results' ).show( 300 ); }, 80 );
+					$( '.vocab' ).animate( { 'width': '440' }, 300 );
+					$( '#textarea-expand' ).html( '⇥' );
+					$( '#textarea-expand' ).animate( { 'margin-left': 404 }, 290 );
+				}
+			}
+		);
+	</script>
+</body>
+</html>
